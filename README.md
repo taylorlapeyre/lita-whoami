@@ -1,6 +1,6 @@
 # lita-whoami
 
-TODO: Add a description of the plugin.
+This handler allows you to tell Lita who people are
 
 ## Installation
 
@@ -10,10 +10,12 @@ Add lita-whoami to your Lita instance's Gemfile:
 gem "lita-whoami"
 ```
 
-## Configuration
-
-TODO: Describe any configuration attributes the plugin exposes.
-
 ## Usage
 
-TODO: Describe the plugin's features and how to use them.
+```
+lita taylor is a bad programmer
+```
+
+```
+lita who is taylor
+```
