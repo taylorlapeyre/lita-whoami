@@ -3,11 +3,11 @@ module Lita
     class Whoami < Handler
       REDIS_KEY = 'lita-whoami'
 
-      route(/(\w+) is (.+)/, :assign_person, command: true, help: {
+      route(/^(\w+) is (.+)/, :assign_person, command: true, help: {
         "SOMEONE is SOMETHING" => "Tell everbot that someone is something."
       })
 
-      route(/who ?is (\w+)/, :describe_person, command: true, help: {
+      route(/^who ?is (\w+)/, :describe_person, command: true, help: {
         "SOMEONE is SOMETHING" => "Tell everbot that someone is something."
       })
 
