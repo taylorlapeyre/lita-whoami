@@ -8,7 +8,7 @@ module Lita
       })
 
       route(/^who ?is (\w+)/, :describe_person, command: true, help: {
-        "SOMEONE is SOMETHING" => "Tell everbot that someone is something."
+        "who is PERSON" => "Everbot will tell you who somebody is."
       })
 
       def key_for_person name
@@ -17,6 +17,8 @@ module Lita
 
       def assign_person(chat)
         name, thing = chat.matches[0]
+
+        return if name == 'who'
 
         redis.rpush key_for_person(name), thing
 

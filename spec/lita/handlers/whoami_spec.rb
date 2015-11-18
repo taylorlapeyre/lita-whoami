@@ -15,6 +15,7 @@ describe Lita::Handlers::Whoami, lita_handler: true do
     expect(replies.last).to eq "Okay, taylor is a bad programmer!"
 
     send_command("who is taylor")
-      expect(replies.last).to eq "taylor is a bad programmer"
+    expect(replies.last).to eq "taylor is a bad programmer"
+    expect(replies.count).to eq 2
   end
 end
