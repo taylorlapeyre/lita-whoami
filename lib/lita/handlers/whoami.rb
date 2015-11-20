@@ -24,8 +24,7 @@ module Lita
       end
 
       def describe_everyone(chat)
-        chat.reply redis.keys
-          .select { |key| key.include?(REDIS_KEY) }
+        chat.reply redis.keys(REDIS_KEY + '*')
           .map { |key| key.split(':').last }
           .map { |person| person + " is " + get_descriptiors_for(person).join(', ') }
           .join("\n\n")

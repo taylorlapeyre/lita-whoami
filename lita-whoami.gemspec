@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-whoami"
-  spec.version       = "0.1.3"
+  spec.version       = "0.1.4"
   spec.authors       = ["Taylor Lapeyre"]
   spec.email         = ["taylorlapeyre@gmail.com"]
   spec.description   = "Allows you to tell Lita who people are."
