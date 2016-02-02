@@ -1,7 +1,8 @@
 module Lita
   module Handlers
     class Whoami < Handler
-      REDIS_KEY = 'lita-whoami'
+      config :bots,      type: Array,  default: ['slackbot']
+      config :redis_key, type: String, default: 'lita-whoami'
 
       route(/^(\w+) is (.+)/, :assign_person, command: true, help: {
         "SOMEONE is SOMETHING" => "Tell everbot that someone is something."
@@ -15,16 +16,14 @@ module Lita
         "who is PERSON" => "Everbot will tell you who somebody is."
       })
 
-      route(/^(i|I) don['’‘]t know who anyone is/, :describe_everyone, command: true, help: {
-        "who is PERSON" => "Everbot will tell you who somebody is."
-      })
+      route(/^(i|I) don['’‘]t know who anyone is/, :describe_everyone, command: true)
 
       def key_for_person name
-        "#{REDIS_KEY}:#{name}"
+        "#{config.redis_key}:#{name.downcase}"
       end
 
       def describe_everyone(chat)
-        chat.reply redis.keys(REDIS_KEY + '*')
+        chat.reply redis.keys(config.redis_key + '*')
           .map { |key| key.split(':').last }
           .map { |person| person + " is " + get_descriptiors_for(person).join(', ') }
           .join("\n\n")
@@ -34,6 +33,7 @@ module Lita
         name, thing = chat.matches[0]
 
         return if name == 'who'
+        return unless valid_thing?(thing, chat)
 
         redis.rpush key_for_person(name), thing
 
@@ -60,6 +60,12 @@ module Lita
 
       def get_descriptiors_for(name)
         redis.lrange(key_for_person(name), 0, -1).uniq
+      end
+
+      def valid_thing?(thing, chat)
+        return false if config.bots.include?(chat.message.source.user.name)
+
+        true
       end
 
       Lita.register_handler(self)

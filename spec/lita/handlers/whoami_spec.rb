@@ -3,13 +3,23 @@ require "rspec/expectations"
 require "rspec/mocks"
 
 describe Lita::Handlers::Whoami, lita_handler: true do
-  it "will assign a person a descriptior." do
-    send_command("taylor is a bad programmer")
+
+  let(:bot_user) { Lita::User.create('1', name: 'slackbot') }
+
+  it "will assign a person a descriptior" do
+    send_command 'taylor is a bad programmer'
+
     expect(replies).to_not be_empty
     expect(replies.last).to eq "Okay, taylor is a bad programmer!"
   end
 
-  it "Can tell you what people are." do
+  it "won't accept assignments from bots" do
+    send_command 'taylor is a good programmer', as: bot_user
+
+    expect(replies).to be_empty
+  end
+
+  it "can tell you what people are" do
     send_command("taylor is a bad programmer")
     send_command("who is taylor")
 
@@ -17,7 +27,7 @@ describe Lita::Handlers::Whoami, lita_handler: true do
     expect(replies.count).to eq 2
   end
 
-  it "Can unassign a descriptior from someone." do
+  it "can unassign a descriptor from someone" do
     send_command("taylor is a bad programmer")
     send_command("who is taylor")
 
@@ -32,7 +42,7 @@ describe Lita::Handlers::Whoami, lita_handler: true do
     expect(replies.last).to eq "taylor is "
   end
 
-  it "Can describe everyone" do
+  it "can describe everyone" do
     send_command("taylor is a bad programmer")
     send_command("danny is a mediocre programmer")
 
