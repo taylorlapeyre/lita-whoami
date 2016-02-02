@@ -5,18 +5,20 @@ module Lita
       config :redis_key, type: String, default: 'lita-whoami'
 
       route(/^(\w+) is (.+)/, :assign_person, command: true, help: {
-        "SOMEONE is SOMETHING" => "Tell everbot that someone is something."
+        "SOMEONE is SOMETHING" => "Make someone be something."
       })
 
       route(/^(\w+) isn['’‘]t (.+)/, :unassign_person, command: true, help: {
-        "SOMEONE isn't SOMETHING" => "Tell everbot that someone is not something."
+        "SOMEONE isn't SOMETHING" => "Make someone not longer be something."
       })
 
       route(/^who ?is (\w+)/, :describe_person, command: true, help: {
-        "who is PERSON" => "Everbot will tell you who somebody is."
+        "who is PERSON" => "Tells you who somebody is."
       })
 
-      route(/^(i|I) don['’‘]t know who anyone is/, :describe_everyone, command: true)
+      route(/^(i|I) don['’‘]t know who anyone is/, :describe_everyone, command: true, help: {
+        "I don't know who anyone is" => "Tells you who everyone is."
+      })
 
       def key_for_person name
         "#{config.redis_key}:#{name.downcase}"
@@ -33,7 +35,7 @@ module Lita
         name, thing = chat.matches[0]
 
         return if name == 'who'
-        return unless valid_thing?(thing, chat)
+        return if invalid_thing?(thing, chat)
 
         redis.rpush key_for_person(name), thing
 
@@ -62,10 +64,8 @@ module Lita
         redis.lrange(key_for_person(name), 0, -1).uniq
       end
 
-      def valid_thing?(thing, chat)
-        return false if config.bots.include?(chat.message.source.user.name)
-
-        true
+      def invalid_thing?(thing, chat)
+        config.bots.include?(chat.message.source.user.name)
       end
 
       Lita.register_handler(self)
