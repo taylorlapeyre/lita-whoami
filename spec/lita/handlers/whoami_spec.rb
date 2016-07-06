@@ -19,6 +19,12 @@ describe Lita::Handlers::Whoami, lita_handler: true do
     expect(replies).to be_empty
   end
 
+  it "definitely won't accept 'Do Not Disturb'-related messages" do
+    send_command 'taylor is currently in Do Not Disturb mode and may not be alerted of this message right away. If it’s urgent, click here...'
+
+    expect(replies).to be_empty
+  end
+
   it "can tell you what people are" do
     send_command("taylor is a bad programmer")
     send_command("who is taylor")

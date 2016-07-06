@@ -65,7 +65,10 @@ module Lita
       end
 
       def invalid_thing?(thing, chat)
-        config.bots.include?(chat.message.source.user.name)
+        return true if chat.message.body.include? 'currently in Do Not Disturb mode'
+        return true if config.bots.include?(chat.message.source.user.name)
+
+        false
       end
 
       Lita.register_handler(self)
